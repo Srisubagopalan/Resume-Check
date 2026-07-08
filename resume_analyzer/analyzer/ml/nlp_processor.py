@@ -21,14 +21,6 @@ from .skills_data import (
 )
 
 # Ensure required NLTK corpora are present (downloaded once, cached locally).
-for pkg in ("punkt", "punkt_tab", "stopwords"):
-    try:
-        nltk.data.find(f"tokenizers/{pkg}" if "punkt" in pkg else f"corpora/{pkg}")
-    except LookupError:
-        try:
-            nltk.download(pkg, quiet=True)
-        except Exception:
-            pass
 
 EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
 PHONE_RE = re.compile(r"(\+?\d{1,3}[-.\s]?)?\(?\d{3,5}\)?[-.\s]?\d{3}[-.\s]?\d{3,4}")
