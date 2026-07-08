@@ -1,0 +1,82 @@
+{% extends "analyzer/base.html" %}
+{% load static %}
+{% block title %}Resume Analyzer &mdash; Scan &amp; Score Your Resume{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <h1>Put your resume<br>under the scanner.</h1>
+      <p class="hero-sub">
+        Upload a resume and get an instant ATS-style score and check any job
+        description ....
+      </p>
+      
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="scan-card">
+        <div class="scan-beam"></div>
+        <div class="doc-line" style="width: 60%"></div>
+        <div class="doc-line" style="width: 85%"></div>
+        <div class="doc-line" style="width: 40%"></div>
+        <div class="doc-tag">SKILLS</div>
+        <div class="doc-chip">python</div>
+        <div class="doc-chip">django</div>
+        <div class="doc-chip">....</div>
+        <div class="doc-line" style="width: 70%"></div>
+        <div class="doc-line" style="width: 55%"></div>
+        <div class="scan-stamp">86%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="upload-section">
+  <div class="container">
+    <div class="upload-card">
+      <h2>Upload your resume</h2>
+      <p class="muted">PDF, DOCX or TXT &middot; (Max 5.0MB)</p>
+
+      <form action="{% url 'analyzer:analyze' %}" method="post" enctype="multipart/form-data" id="analyze-form">
+        {% csrf_token %}
+
+        <div class="dropzone" id="dropzone">
+          <input type="file" name="resume_file" id="id_resume_file" accept=".pdf,.docx,.txt" required>
+          <div class="dropzone-content">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p><strong>Drop your resume here</strong> or click to browse</p>
+            <p class="file-name" id="file-name"></p>
+          </div>
+        </div>
+
+        <label class="field-label" for="id_job_description">Target job description </label>
+        <textarea name="job_description" id="id_job_description" rows="6"
+          placeholder="Paste a job description here to get a match score against this specific role..."></textarea>
+
+        <button type="submit" class="btn-primary" id="submit-btn">
+          <span class="btn-label">Analyze Resume</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+    </div>
+
+    {% if recent %}
+    <div class="recent-strip">
+      <h3>Recently analyzed</h3>
+      <div class="recent-list">
+        {% for item in recent %}
+        <a href="{% url 'analyzer:result' item.pk %}" class="recent-chip">
+          <span class="recent-score">{{ item.ats_score|floatformat:0 }}</span>
+          <span class="recent-name">{{ item.original_filename }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

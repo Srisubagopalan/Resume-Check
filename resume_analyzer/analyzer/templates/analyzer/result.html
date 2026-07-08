@@ -1,0 +1,139 @@
+{% extends "analyzer/base.html" %}
+{% block title %}Analysis Result &mdash; {{ analysis.original_filename }}{% endblock %}
+
+{% block content %}
+<section class="result-hero">
+  <div class="container result-hero-row">
+    <div>
+      <p class="eyebrow">Analysis complete</p>
+      <h1>{{ analysis.original_filename }}</h1>
+      <p class="muted">Scanned on {{ analysis.created_at|date:"M d, Y \a\t H:i" }}</p>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge" style="--pct: {{ report.ats_score }};">
+        <div class="gauge-inner">
+          <span class="gauge-score">{{ report.ats_score|floatformat:0 }}</span>
+          <span class="gauge-max">/100</span>
+        </div>
+      </div>
+      <span class="gauge-grade grade-{{ report.ats_grade|slugify }}">{{ report.ats_grade }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="container result-grid">
+
+  <div class="col-main">
+
+    <div class="card">
+      <h2>Score breakdown</h2>
+      <div class="breakdown-list">
+        {% for label, item in report.score_breakdown.items %}
+        <div class="breakdown-row">
+          <div class="breakdown-label">{{ label }}</div>
+          <div class="breakdown-bar">
+            <div class="breakdown-fill" style="width: {% widthratio item.score item.max 100 %}%"></div>
+          </div>
+          <div class="breakdown-value">{{ item.score }}/{{ item.max }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Suggestions to improve</h2>
+      <ul class="suggestion-list">
+        {% for s in report.suggestions %}
+        <li>{{ s }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% if report.jd_match_percent is not None %}
+    <div class="card">
+      <h2>Job description match</h2>
+      <div class="jd-match-row">
+        <div class="jd-match-score grade-{{ report.jd_grade|slugify }}">{{ report.jd_match_percent }}%</div>
+        <p class="muted">Cosine similarity between your resume and the pasted job description
+          (TF&#8209;IDF vectorized).</p>
+      </div>
+      {% if report.jd_missing_keywords %}
+      <p class="field-label">Keywords in the JD not found in your resume:</p>
+      <div class="chip-row">
+        {% for kw in report.jd_missing_keywords %}
+        <span class="chip chip--missing">{{ kw }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <h2>Sections detected</h2>
+      <div class="section-grid">
+        {% for name, present in report.sections_found.items %}
+        <div class="section-check {% if present %}is-found{% else %}is-missing{% endif %}">
+          {% if present %}&#10003;{% else %}&#10005;{% endif %} {{ name|title }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-side">
+
+    <div class="card">
+      <h2>Contact info found</h2>
+      <ul class="contact-list">
+        <li class="{% if report.contact_info.email %}ok{% else %}missing{% endif %}">
+          Email: {{ report.contact_info.email|default:"Not found" }}</li>
+        <li class="{% if report.contact_info.phone %}ok{% else %}missing{% endif %}">
+          Phone: {{ report.contact_info.phone|default:"Not found" }}</li>
+        <li class="{% if report.contact_info.linkedin %}ok{% else %}missing{% endif %}">
+          LinkedIn: {{ report.contact_info.linkedin|default:"Not found" }}</li>
+        <li class="{% if report.contact_info.github %}ok{% else %}missing{% endif %}">
+          GitHub: {{ report.contact_info.github|default:"Not found" }}</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Matched skills ({{ report.skills_found|length }})</h2>
+      <div class="chip-row">
+        {% for skill in report.skills_found %}
+        <span class="chip chip--highlight">{{ skill }}</span>
+        {% empty %}
+        <p class="muted">No known skills detected. Try adding a dedicated Skills section.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Education keywords</h2>
+      <div class="chip-row">
+        {% for edu in report.education_found %}
+        <span class="chip">{{ edu }}</span>
+        {% empty %}
+        <p class="muted">No degree keywords detected.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Quick stats</h2>
+      <ul class="stat-list">
+        <li><span>Word count</span><strong>{{ report.word_count }}</strong></li>
+        <li><span>Action verbs used</span><strong>{{ report.action_verbs_used|length }}</strong></li>
+        <li><span>Estimated experience</span><strong>{{ report.estimated_experience_years }} yrs</strong></li>
+        <li><span>Weak phrases found</span><strong>{{ report.weak_phrases|length }}</strong></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="container result-actions">
+  <a href="{% url 'analyzer:home' %}" class="btn-secondary">&larr; Analyze another resume</a>
+  <a href="{% url 'analyzer:history' %}" class="btn-secondary">View history</a>
+</div>
+{% endblock %}

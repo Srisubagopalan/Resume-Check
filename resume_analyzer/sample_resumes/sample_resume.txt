@@ -1,0 +1,27 @@
+John Doe
+john.doe@email.com | +1-202-555-0143
+linkedin.com/in/johndoe | github.com/johndoe
+
+Summary
+Motivated Computer Science graduate with a passion for machine learning and web development.
+
+Education
+B.Tech in Computer Science, XYZ University, 2019-2023
+
+Experience
+Software Engineering Intern, TechCorp, 2022-2023
+- Developed and deployed a REST API using Django and PostgreSQL
+- Implemented a machine learning pipeline using scikit-learn to classify support tickets
+- Optimized database queries, reducing response time by 30%
+- Collaborated with a team of 5 engineers using Git and Jira
+
+Projects
+Resume Analyzer - Built an NLP-based resume scoring tool using Python, NLTK and TensorFlow
+Chat Application - Created a real-time chat app using React, Node.js and MongoDB
+
+Skills
+Python, Java, JavaScript, Django, React, SQL, MongoDB, Machine Learning, Deep Learning, Git, Docker, AWS
+
+Certifications
+AWS Certified Cloud Practitioner
+Coursera Machine Learning Specialization
