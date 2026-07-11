@@ -63,20 +63,7 @@
         </button>
       </form>
     </div>
-
-    {% if recent %}
-    <div class="recent-strip">
-      <h3>Recently analyzed</h3>
-      <div class="recent-list">
-        {% for item in recent %}
-        <a href="{% url 'analyzer:result' item.pk %}" class="recent-chip">
-          <span class="recent-score">{{ item.ats_score|floatformat:0 }}</span>
-          <span class="recent-name">{{ item.original_filename }}</span>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
+    
   </div>
 </section>
 {% endblock %}
